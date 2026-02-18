@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.22', '1.25', '1.26']
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Verify Go version
+        run: go version
+
+      - name: Find Go modules
+        id: find-modules
+        run: |
+          modules=$(find . -name 'go.mod' -not -path './vendor/*' -exec dirname {} \; | sort)
+          if [ -z "$modules" ]; then
+            echo "No Go modules found"
+            echo "has_modules=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Found modules:"
+            echo "$modules"
+            echo "has_modules=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build, vet, format check, and test
+        if: steps.find-modules.outputs.has_modules == 'true'
+        run: |
+          exit_code=0
+          for dir in $(find . -name 'go.mod' -not -path './vendor/*' -exec dirname {} \; | sort); do
+            echo "=== $dir ==="
+            cd "$dir"
+
+            echo "--- go build ---"
+            go build ./... || exit_code=1
+
+            echo "--- go vet ---"
+            go vet ./... || exit_code=1
+
+            echo "--- gofmt check ---"
+            diff=$(gofmt -d .)
+            if [ -n "$diff" ]; then
+              echo "gofmt found differences:"
+              echo "$diff"
+              exit_code=1
+            fi
+
+            echo "--- go test ---"
+            if ls *_test.go >/dev/null 2>&1 || find . -name '*_test.go' -print -quit | grep -q .; then
+              go test ./... || exit_code=1
+            else
+              echo "No test files found, skipping"
+            fi
+
+            cd "$GITHUB_WORKSPACE"
+          done
+          exit $exit_code
+
+  staticcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Find Go modules
+        id: find-modules
+        run: |
+          modules=$(find . -name 'go.mod' -not -path './vendor/*' -exec dirname {} \; | sort)
+          if [ -z "$modules" ]; then
+            echo "has_modules=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_modules=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run staticcheck
+        if: steps.find-modules.outputs.has_modules == 'true'
+        run: |
+          for dir in $(find . -name 'go.mod' -not -path './vendor/*' -exec dirname {} \; | sort); do
+            echo "=== $dir ==="
+            cd "$dir"
+            staticcheck ./... || true
+            cd "$GITHUB_WORKSPACE"
+          done
