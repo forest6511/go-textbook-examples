@@ -100,6 +100,6 @@ jobs:
           for dir in $(find . -name 'go.mod' -not -path './vendor/*' -exec dirname {} \; | sort); do
             echo "=== $dir ==="
             cd "$dir"
-            staticcheck ./... || true
+            staticcheck ./...
             cd "$GITHUB_WORKSPACE"
           done

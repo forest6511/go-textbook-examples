@@ -51,7 +51,7 @@ ch12-rest-api/
 
 - `modernc.org/sqlite`（pure Go SQLite ドライバ）でデータ永続化
 - `database/sql` の共通インターフェースで DB 操作
-- Go 1.22 拡張ルーティング（`"GET /books/{id}"`）
+- 拡張ルーティング（`"GET /books/{id}"`）
 - ハンドラをクロージャとして返すパターンで `*sql.DB` を渡す
 - SQL プレースホルダ（`?`）で SQL インジェクション防止
 - `errors.Is(err, sql.ErrNoRows)` で 404 判定

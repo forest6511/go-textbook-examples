@@ -26,5 +26,8 @@ Thumbs.db
 *.swo
 *~
 
+# Go build output (no extension on macOS/Linux)
+ch*/ch*
+
 # Dependency directories
 vendor/

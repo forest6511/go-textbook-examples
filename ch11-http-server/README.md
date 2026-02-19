@@ -47,7 +47,7 @@ ch11-http-server/
 
 ## ポイント
 
-- Go 1.22 の拡張ルーティング（`"GET /path/{param}"`）を使用
+- 拡張ルーティング（`"GET /path/{param}"`）を使用
 - `http.NewServeMux()` で独自ルーターを作成（DefaultServeMux を避ける）
 - ミドルウェアチェーン: recover → logging → ハンドラ
 - `http.Server` 構造体でタイムアウトを設定

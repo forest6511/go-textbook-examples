@@ -1,3 +1,6 @@
+[![CI](https://github.com/forest6511/go-textbook-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/forest6511/go-textbook-examples/actions/workflows/ci.yml)
+![Go Version](https://img.shields.io/badge/Go-1.26-00ADD8?logo=go)
+
 # Go言語の教科書 — サンプルコード
 
 **「Go言語の教科書: 基礎からWebアプリ開発まで」** のサンプルコード完全版です。
