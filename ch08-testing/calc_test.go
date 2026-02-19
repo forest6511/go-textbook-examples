@@ -86,7 +86,7 @@ func TestAddParallel(t *testing.T) {
 // --- ベンチマーク ---
 
 func BenchmarkAdd(b *testing.B) {
-	for range b.N {
+	for b.Loop() {
 		Add(100, 200)
 	}
 }
@@ -102,7 +102,7 @@ func BenchmarkDivide(b *testing.B) {
 
 	for _, bm := range benchmarks {
 		b.Run(bm.name, func(b *testing.B) {
-			for range b.N {
+			for b.Loop() {
 				Divide(bm.a, bm.b)
 			}
 		})

@@ -162,11 +162,9 @@ func main() {
 	c := SafeCounter{v: make(map[string]int)}
 	var wg2 sync.WaitGroup
 	for range 1000 {
-		wg2.Add(1)
-		go func() {
-			defer wg2.Done()
+		wg2.Go(func() {
 			c.Inc("key")
-		}()
+		})
 	}
 	wg2.Wait()
 	fmt.Println("count:", c.Value("key"))

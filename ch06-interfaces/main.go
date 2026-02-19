@@ -170,11 +170,10 @@ func main() {
 	fmt.Println(err)
 	fmt.Println("Is ErrNotFound:", errors.Is(err, ErrNotFound))
 
-	// errors.As
-	fmt.Println("\n=== errors.As ===")
+	// errors.AsType（Go 1.26+: 型安全なエラー検査）
+	fmt.Println("\n=== errors.AsType ===")
 	err = validate("")
-	var ve *ValidationError
-	if errors.As(err, &ve) {
+	if ve, ok := errors.AsType[*ValidationError](err); ok {
 		fmt.Printf("バリデーションエラー: %s\n", ve.Field)
 	}
 

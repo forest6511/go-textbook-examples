@@ -108,4 +108,15 @@ func main() {
 		"usage", 85.5,
 		"threshold", 80.0,
 	)
+
+	// NewMultiHandler（Go 1.26+: 複数のハンドラを組み合わせ）
+	fmt.Println("\n=== slog.NewMultiHandler ===")
+	textHandler := slog.NewTextHandler(os.Stdout, nil)
+	jsonHandler := slog.NewJSONHandler(os.Stderr, nil)
+	multi := slog.NewMultiHandler(textHandler, jsonHandler)
+	logger := slog.New(multi)
+	logger.Info("イベント発生",
+		"event", "user_login",
+		"user_id", 42,
+	)
 }

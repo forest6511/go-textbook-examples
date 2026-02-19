@@ -10,7 +10,7 @@ func main() {
 	}
 
 	// --- for 文 (3部分) ---
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		fmt.Print(i, " ")
 	}
 	fmt.Println()

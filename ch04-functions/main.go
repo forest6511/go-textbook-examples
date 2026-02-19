@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
-	"sort"
+	"slices"
 )
 
 // --- 複数の戻り値 ---
@@ -142,9 +142,7 @@ func main() {
 
 	fmt.Println("\n=== sort.Slice ===")
 	names := []string{"Charlie", "Alice", "Bob"}
-	sort.Slice(names, func(i, j int) bool {
-		return names[i] < names[j]
-	})
+	slices.Sort(names)
 	fmt.Println(names)
 
 	fmt.Println("\n=== 関数型に名前を付ける ===")

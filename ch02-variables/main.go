@@ -24,7 +24,7 @@ func main() {
 	// --- 変数宣言 ---
 	var name string = "Go"
 	var year int = 2009
-	var version = 1.22
+	var version = 1.26
 	var count int // ゼロ値: 0
 	fmt.Println(name, year, version, count)
 
