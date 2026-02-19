@@ -109,14 +109,43 @@ func main() {
 		"threshold", 80.0,
 	)
 
-	// NewMultiHandler（Go 1.26+: 複数のハンドラを組み合わせ）
-	fmt.Println("\n=== slog.NewMultiHandler ===")
-	textHandler := slog.NewTextHandler(os.Stdout, nil)
-	jsonHandler := slog.NewJSONHandler(os.Stderr, nil)
-	multi := slog.NewMultiHandler(textHandler, jsonHandler)
-	logger := slog.New(multi)
-	logger.Info("イベント発生",
-		"event", "user_login",
+	// JSON ハンドラ
+	fmt.Println("\n=== slog JSON ハンドラ ===")
+	jsonLogger := slog.New(
+		slog.NewJSONHandler(os.Stdout, nil),
+	)
+	jsonLogger.Info("リクエスト受信",
+		"method", "GET",
+		"path", "/api/users",
+		"status", 200,
+	)
+
+	// logger.With（共通属性）
+	fmt.Println("\n=== logger.With ===")
+	textLogger := slog.New(
+		slog.NewTextHandler(os.Stdout, nil),
+	)
+	reqLogger := textLogger.With(
+		"request_id", "abc-123",
 		"user_id", 42,
 	)
+	reqLogger.Info("処理開始")
+	reqLogger.Info("処理完了", "duration_ms", 150)
+
+	// slog.NewMultiHandler（Go 1.26）
+	fmt.Println("\n=== slog.NewMultiHandler ===")
+	logFile, err := os.CreateTemp("", "slog-*.log")
+	if err != nil {
+		fmt.Fprintf(os.Stderr,
+			"ログファイルエラー: %v\n", err)
+		os.Exit(1)
+	}
+	defer os.Remove(logFile.Name())
+	defer logFile.Close()
+
+	textHandler := slog.NewTextHandler(os.Stdout, nil)
+	jsonHandler := slog.NewJSONHandler(logFile, nil)
+	multi := slog.NewMultiHandler(textHandler, jsonHandler)
+	multiLogger := slog.New(multi)
+	multiLogger.Info("サーバー起動", "port", 8080)
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
@@ -69,12 +70,15 @@ func main() {
 			5*time.Second,
 		)
 		defer cancel()
-		srv.Shutdown(shutCtx)
+		if err := srv.Shutdown(shutCtx); err != nil {
+			slog.Error("シャットダウン失敗",
+				"error", err)
+		}
 	}()
 
 	slog.Info("サーバー起動", "addr", ":8080")
 	if err := srv.ListenAndServe(); err != nil &&
-		err != http.ErrServerClosed {
+		!errors.Is(err, http.ErrServerClosed) {
 		slog.Error("サーバーエラー",
 			"error", err)
 		os.Exit(1)

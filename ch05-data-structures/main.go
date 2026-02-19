@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"sort"
+	"slices"
 )
 
 // --- スライス ---
@@ -83,7 +83,7 @@ func mapDemo() {
 	for k := range scores {
 		keys = append(keys, k)
 	}
-	sort.Strings(keys)
+	slices.Sort(keys)
 	for _, k := range keys {
 		fmt.Printf("%s: %d\n", k, scores[k])
 	}

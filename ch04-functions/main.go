@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"slices"
@@ -10,7 +11,7 @@ import (
 
 func divide(a, b float64) (float64, error) {
 	if b == 0 {
-		return 0, fmt.Errorf("ゼロ除算はできません")
+		return 0, errors.New("ゼロ除算はできません")
 	}
 	return a / b, nil
 }
@@ -140,7 +141,7 @@ func main() {
 	squared := apply(nums, func(n int) int { return n * n })
 	fmt.Println("squared:", squared)
 
-	fmt.Println("\n=== sort.Slice ===")
+	fmt.Println("\n=== slices.Sort ===")
 	names := []string{"Charlie", "Alice", "Bob"}
 	slices.Sort(names)
 	fmt.Println(names)

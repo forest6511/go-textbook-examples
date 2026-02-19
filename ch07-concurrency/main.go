@@ -15,12 +15,6 @@ func sayHello(name string) {
 
 // --- sync.WaitGroup ---
 
-func worker(id int, wg *sync.WaitGroup) {
-	defer wg.Done() // panic しても確実にカウンタを減算
-	fmt.Printf("Worker %d 開始\n", id)
-	fmt.Printf("Worker %d 完了\n", id)
-}
-
 // --- channel: producer / consumer ---
 
 func producer(out chan<- int) {
@@ -91,8 +85,11 @@ func main() {
 	fmt.Println("\n=== sync.WaitGroup ===")
 	var wg sync.WaitGroup
 	for i := range 3 {
-		wg.Add(1)
-		go worker(i, &wg)
+		id := i
+		wg.Go(func() {
+			fmt.Printf("Worker %d 開始\n", id)
+			fmt.Printf("Worker %d 完了\n", id)
+		})
 	}
 	wg.Wait()
 	fmt.Println("全ワーカー完了")

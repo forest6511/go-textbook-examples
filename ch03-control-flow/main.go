@@ -46,6 +46,8 @@ func main() {
 		fmt.Println("週の始まり")
 	case "水曜日":
 		fmt.Println("週の半ば")
+	case "金曜日":
+		fmt.Println("週末が近い")
 	default:
 		fmt.Println("その他の曜日")
 	}
